@@ -47,6 +47,50 @@
         <div class="login-link">
             <p>Already have an account? <a href="#login">Log in</a></p>
         </div>
+        <!-- Login Container (Hidden by Default) -->
+<div class="login-container" id="loginContainer" style="display: none;">
+    <h2>Log In</h2>
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="loginFirstName">First Name</label>
+            <input type="text" id="loginFirstName" name="loginFirstName" required>
+        </div>
+
+        <div class="form-group">
+            <label for="loginLastName">Last Name</label>
+            <input type="text" id="loginLastName" name="loginLastName" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" name="loginPassword" required>
+        </div>
+        
+        <button type="submit" class="login-btn">Log In</button>
+    </form>
+    
+    <div class="signup-link">
+        <p>Don't have an account? <a href="#" id="signupLink">Sign up</a></p>
+    </div>
+</div>
+
+<script>
+    // JavaScript to toggle between Sign Up and Log In forms
+    document.getElementById('loginLink').addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent default link behavior
+        document.getElementById('signup-container').style.display = 'none'; // Hide Sign Up form
+        document.getElementById('loginContainer').style.display = 'block'; // Show Log In form
+    });
+
+    document.getElementById('signupLink').addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent default link behavior
+        document.getElementById('loginContainer').style.display = 'none'; // Hide Log In form
+        document.getElementById('signup-container').style.display = 'block'; // Show Sign Up form
+    });
+</script>
+
+</body>
+</html>
     </div>
 </body>
 </html>
