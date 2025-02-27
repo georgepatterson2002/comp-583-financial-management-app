@@ -11,4 +11,4 @@
         document.getElementById('loginContainer').style.display = 'none'; // Hide Log In form
         document.getElementById('signup-container').style.display = 'block'; // Show Sign Up form
     });
-</script>//app.js
+</script>
