@@ -34,14 +34,14 @@ function updateTotals() {
     .reduce((sum, transaction) => sum + transaction.amount, 0);
 
   const totalExpenses = transactions
-    .filter((transaction) => transaction.type === "expense")
+    .filter((transaction) => transaction.type === "expense" || transaction.type === "transfer")
     .reduce((sum, transaction) => sum + transaction.amount, 0);
 
   const currentBalance = totalIncome - totalExpenses;
 
-  document.getElementById("totalIncome").textContent = `₹${totalIncome}`;
-  document.getElementById("totalExpenses").textContent = `₹${totalExpenses}`;
-  document.getElementById("currentBalance").textContent = `₹${currentBalance}`;
+  document.getElementById("totalIncome").textContent = `$${totalIncome}`;
+  document.getElementById("totalExpenses").textContent = `$${totalExpenses}`;
+  document.getElementById("currentBalance").textContent = `$${currentBalance}`;
 }
 
 function renderTable(filter = "all") {
@@ -53,6 +53,8 @@ function renderTable(filter = "all") {
     filteredTransactions = transactions.filter(t => t.type === "income");
   } else if (filter === "expense") {
     filteredTransactions = transactions.filter(t => t.type === "expense");
+  } else if (filter === "transfer") {
+    filteredTransactions = transactions.filter(t => t.type === "transfer");
   }
 
   const startIndex = (currentPage - 1) * transactionsPerPage;
@@ -66,7 +68,7 @@ function renderTable(filter = "all") {
         <td>${transaction.name}</td>
         <td>${transaction.type}</td>
         <td>${transaction.date}</td>
-        <td>₹${transaction.amount}</td>
+        <td>$${transaction.amount}</td>
         <td>${transaction.tag}</td>
       `;
       tableBody.appendChild(newRow);
@@ -205,5 +207,40 @@ function showExpenseForm() {
   document.getElementById("expenseModal").style.display = "flex";
 }
 
-// To enable freeze button, add this to your HTML near logout:
-// <button class="btn" id="freezeToggleBtn" onclick="toggleFreeze()">Freeze</button>
+/* New Functions for Transfer Money */
+
+function showTransferForm() {
+  document.getElementById("transferModal").style.display = "flex";
+}
+
+function closeTransferModal() {
+  document.getElementById("transferModal").style.display = "none";
+}
+
+function resetTransferForm() {
+  document.getElementById("transferAccount").value = "";
+  document.getElementById("transferAmount").value = "";
+  document.getElementById("transferDate").value = "";
+}
+
+function addTransfer() {
+  if (isFrozen) {
+    alert("Dashboard is frozen. Unfreeze to perform transfer.");
+    return;
+  }
+  const account = document.getElementById("transferAccount").value;
+  const amount = parseFloat(document.getElementById("transferAmount").value);
+  const date = document.getElementById("transferDate").value;
+
+  if (!account || !amount || !date) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  // Record the transfer as a transaction.
+  // The name includes the destination account.
+  addTransaction("Transfer to " + account, "transfer", date, amount, "transfer");
+
+  closeTransferModal();
+  resetTransferForm();
+}
