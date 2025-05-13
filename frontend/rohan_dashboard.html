@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Financial Summary</title>
+  <link rel="stylesheet" href="style1.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h1>FinTrack</h1>
+    <div class="header-actions">
+      <!-- Settings Dropdown -->
+<div class="settings-dropdown">
+  <button class="btn" onclick="toggleSettings()">Settings ⚙️</button>
+  <div id="settingsMenu" class="dropdown-content">
+    <label for="profileName">Name:</label>
+    <input type="text" id="profileName" placeholder="Your name" />
+
+    <label for="profileEmail">Email:</label>
+    <input type="email" id="profileEmail" placeholder="you@example.com" />
+
+    <hr />
+
+    <label for="currencySelect">Currency:</label>
+    <select id="currencySelect" onchange="changeCurrency()">
+      <option value="USD" selected>$ USD</option>
+      <option value="INR">₹ INR</option>
+      <option value="EUR">€ EUR</option>
+    </select>
+
+    <hr />
+
+    <button class="btn" id="freezeToggleBtn" onclick="toggleFreeze()">Freeze</button>
+
+    <label style="margin-top: 10px;">
+      <input type="checkbox" id="notificationsEnabled" onchange="saveProfile()" />
+      Enable bill reminders
+    </label>
+
+    <hr />
+
+    <button class="btn" onclick="saveProfile()">💾 Save</button>
+    <button class="btn" onclick="resetProfile()">🧹 Reset</button>
+  </div>
+</div>
+
+      
+      <!-- Theme Toggle -->
+      <button id="themeToggle" class="theme-toggle" onclick="toggleDarkMode()">
+        <div class="icon-wrapper">
+          <div class="sun"></div>
+          <div class="moon"></div>
+        </div>
+      </button>
+  
+      <!-- Logout Button -->
+      <button class="logout-btn" onclick="goToLogin()">Logout</button>
+    </div>
+  </div>
+  <!-- 🆕 Daily Tip Section -->
+  <div class="container" id="dailyTipSection">
+  <h3>💡 Daily Financial Tip</h3>
+  <p id="dailyTip" class="animated-tip">Loading tip...</p>
+  <button class="btn small-btn" onclick="showDailyTip()" aria-label="Shuffle financial tip">🔁</button>
+
+  </div>
+  <!-- Main Content Container -->
+  <div class="main-container">
+    <!-- Card Container -->
+    <div class="card-container">
+      <div class="card">
+        <h2>
+          Current Balance
+          
+          <button class="btn small-tts" onclick="speakAmount('balance')">🔊</button>
+
+        </h2>
+        <p id="currentBalance">₹0</p>
+        <button class="btn" onclick="resetBalance()">Reset Balance</button>
+      </div>
+
+      <div class="card">
+        <h2>
+          Total Income
+          <button class="btn small-tts" onclick="speakAmount('income')">🔊</button>
+        </h2>
+        <p id="totalIncome">₹0</p>
+        <button class="btn" onclick="showIncomeForm()">Add Income</button>
+      </div>
+
+      <div class="card">
+        <h2>
+          Total Expense
+          <button class="btn small-tts" onclick="speakAmount('expense')">🔊</button>
+        </h2>
+        <p id="totalExpenses">₹0</p>
+        <button class="btn" onclick="showExpenseForm()">Add Expense</button>
+      </div>
+    </div>
+
+    <!-- Table Container -->
+    <div class="container">
+      <h2>My Transactions</h2>
+      <div class="search-filter">
+        <input type="text" placeholder="Search by Name" class="search-input" />
+        <select class="filter-select">
+          <option value="all">All</option>
+          <option value="income">Income</option>
+          <option value="expense">Expense</option>
+        </select>
+      </div>
+
+      <div class="sort-actions">
+        <div class="sort-buttons">
+          <button class="btn">No Sort</button>
+          <button class="btn">Sort by Date</button>
+          <button class="btn">Sort by Amount</button>
+        </div>
+        <div class="export-import">
+          <button class="btn">Export to CSV</button>
+          <button class="btn">Import from CSV</button>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Tag</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="no-data">
+            <td colspan="5"><p>📝 You haven’t added any transactions yet.<br>Start by adding income or expense.</p></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div id="pagination-controls" class="pagination-controls"></div>
+    </div>
+  </div>
+  <div class="snapshot-card" onclick="window.location.href='snapshot.html'">
+    <div class="snapshot-icon">💰</div>
+    <div class="snapshot-content">
+      <div class="snapshot-header">
+        <h3>Snapshot</h3>
+        <span class="read-time">30 sec read</span>
+      </div>
+      <p id="snapshotText">Your money in this month is ₹0.</p>
+    </div>
+    <div class="snapshot-arrow">➤</div>
+  </div>
+  
+  <!-- Pie Chart -->
+  <div class="container" id="insightsSection">
+    <h2>Spending by Category</h2>
+    <canvas id="categoryChart" width="400" height="400"></canvas>
+  </div>
+
+  <!-- 🎯 Savings Goal Section -->
+  <div class="container">
+    <h2>Set Savings Goal</h2>
+    <label for="goalAmount">Goal Amount:</label>
+    <input type="number" id="goalAmount" />
+    <label for="goalDeadline">Deadline:</label>
+    <input type="date" id="goalDeadline" />
+    <button class="btn" onclick="handleSetSavingsGoal()">Set Goal</button>
+  </div>
+
+  <div class="container" id="savingsGoal"></div>
+</div>
+<!-- 📈 Stock Portfolio Section -->
+<div class="container" id="stockSection">
+  <h2>📈 My Stock Portfolio</h2>
+  <table id="stockTable">
+    <thead>
+      <tr>
+        <th>Symbol</th>
+        <th>Shares</th>
+        <th>Buy Price</th>
+        <th>Current Price</th>
+        <th>Profit/Loss</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="form-row">
+    <input type="text" id="stockSymbol" placeholder="e.g., AAPL" />
+    <input type="number" id="stockShares" placeholder="Shares" />
+    <input type="number" id="stockBuyPrice" placeholder="Buy Price" />
+    <button class="btn" onclick="addStock()">Add Stock</button>
+  </div>
+</div>
+
+<!-- 📉 Monthly Budget Section -->
+<div class="container" id="budgetSection">
+  <h2>📉 Monthly Budgets</h2>
+
+  <label for="budgetCategory">Category:</label>
+  <select id="budgetCategory">
+    <option value="food">Food</option>
+    <option value="education">Education</option>
+    <option value="office">Office</option>
+    <option value="other">Other</option>
+  </select>
+
+  <label for="budgetAmount">Budget Amount:</label>
+  <input type="number" id="budgetAmount" placeholder="e.g., 5000" />
+
+  <button class="btn" onclick="setBudget()">Set Budget</button>
+
+  <div id="budgetAlerts" style="margin-top: 20px;"></div>
+</div>
+
+
+<!--Owes Summary-->
+<div class="container" id="owesSummary">
+  <h3>💳 Who Owes Whom</h3>
+  <p>No debts yet.</p>
+</div>
+
+<div class="container" id="creditScoreSection">
+  <h2>📊 Credit Score Simulation</h2>
+  <canvas id="creditScoreChart" width="150" height="150"></canvas>
+  <p id="creditScoreTooltip" title="Your score is based on:
+- 35% Bill payment history
+- 30% Income-to-expense ratio
+- 20% Savings goal completion
+- 15% Settled vs. unpaid expenses">
+  ℹ️ Hover to learn how your score is calculated
+</p>
+</div>
+
+
+
+
+  <!-- 📋 Bill List -->
+<div class="container" id="billListSection">
+  <h2>Upcoming Bills</h2>
+  <ul id="billList"></ul>
+
+
+<!-- 📅 Calendar View -->
+<div class="container" id="calendarView"></div>
+
+
+<!-- Income Modal -->
+<div class="modal" id="incomeModal">
+  <div class="modal-content">
+    <div class="modal-header">
+        <h2>Add Income</h2>
+        <span class="close-btn" onclick="closeIncomeModal()">×</span>
+    </div>
+      <hr class="divider" />
+      <label for="incomeName"><span>*</span> Name</label>
+      <input type="text" id="incomeName" required />
+      <label for="incomeAmount"><span>*</span> Amount</label>
+      <input type="number" id="incomeAmount" required />
+      <label for="incomeDate"><span>*</span> Date</label>
+      <input type="date" id="incomeDate" required />
+      <label for="incomeTag"><span>*</span> Tag</label>
+      <select id="incomeTag" required>
+        <option value="" disabled selected>Select tag</option>
+        <option value="salary">Salary</option>
+        <option value="freelance">Freelance</option>
+        <option value="investment">Investment</option>
+      </select>
+    <div class="button-container">
+        <button class="btn" onclick="addIncome()">Add Income</button>
+    </div>
+ </div>
+</div>
+
+  <!-- Expense Modal -->
+  <div class="modal" id="expenseModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Add Expense</h2>
+        <span class="close-btn" onclick="closeExpenseModal()">×</span>
+      </div>
+      <hr class="divider" />
+      <label for="expenseName"><span>*</span> Name</label>
+      <input type="text" id="expenseName" required />
+      <label for="expenseAmount"><span>*</span> Amount</label>
+      <input type="number" id="expenseAmount" required />
+      <label for="expenseDate"><span>*</span> Date</label>
+      <input type="date" id="expenseDate" required />
+      <label for="expenseTag"><span>*</span> Tag</label>
+      <select id="expenseTag" required>
+        <option value="" disabled selected>Select tag</option>
+        <option value="food">Food</option>
+        <option value="education">Education</option>
+        <option value="office">Office</option>
+      </select>
+      
+      <label for="expenseSplit">Split With (comma separated):</label>
+      <input type="text" id="expenseSplit" placeholder="e.g., You, Raj, Anjali" />
+      <label for="payer">Who Paid?</label>
+      <input type="text" id="payer" placeholder="e.g., You" required />
+
+
+    <div class="button-container">
+      <button class="btn" onclick="addExpense()">Add Expense</button>
+    </div>
+    </div>
+  </div>
+
+  <!--Add Bill Form-->
+  <!-- 📥 Add a Bill Section -->
+<div class="container" id="billFormSection">
+  <h2>Add a Bill</h2>
+  <label for="billName">Bill Name:</label>
+  <input type="text" id="billName" />
+
+  <label for="billAmount">Amount:</label>
+  <input type="number" id="billAmount" />
+
+  <label for="billDueDate">Due Date:</label>
+  <input type="date" id="billDueDate" />
+
+  <label for="billRepeat">Repeat:</label>
+  <select id="billRepeat">
+    <option value="once">One-time</option>
+    <option value="monthly">Monthly</option>
+  </select>
+
+  <label for="billTag">Tag:</label>
+  <select id="billTag">
+    <option value="utilities">Utilities</option>
+    <option value="rent">Rent</option>
+    <option value="subscriptions">Subscriptions</option>
+    <option value="other">Other</option>
+  </select>
+
+  <button class="btn" onclick="addBill()">Add Bill</button>
+</div>
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+ <script src="rohan_javascript1.js"></script>
+ <script>
+  function goToLogin() {
+    window.location.href = "loginPage.html";
+  }
+</script>
+</body>
+</html>
