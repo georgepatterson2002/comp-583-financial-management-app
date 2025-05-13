@@ -1,57 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up Page</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Account</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
 
-<div class="top-bar">
+  <div class="top-bar">
     <h1 class="app-name">FinTrack</h1>
-</div>
+  </div>
 
+  <div class="signup-container">
+    <h2>Create Account</h2>
+    <form id="signupForm">
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" name="firstName" required />
+      </div>
 
-    <div class="signup-container">
-        <h2>Create Account</h2>
-        <form id="signupForm">
-            <div class="form-group">
-                <label for="firstName">First Name</label>
-                <input type="text" id="firstName" name="firstName" required>
-            </div>
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" name="lastName" required />
+      </div>
 
-            <div class="form-group">
-                <label for="lastName">Last Name</label>
-                <input type="text" id="lastName" name="lastName" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
-            </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required />
+      </div>
 
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
-                <input type="confirmPassword" id="confirmPassword" name="confirmPassword" required>
-            </div>
-            
-            <button type="submit" class="createAccount-btn">Create Account</button>
-        </form>
-        
-        <div class="login-link">
-            <p>Already have an account? <a href="loginPage.html">Log in</a></p>
-        </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required />
+      </div>
 
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required />
+      </div>
 
+      <button type="submit" class="createAccount-btn">Create Account</button>
+    </form>
 
-</body>
-</html>
+    <div class="login-link">
+      <p>Already have an account? <a href="loginPage.html">Log in</a></p>
     </div>
+  </div>
+
+  <!-- ✅ Signup JavaScript -->
+  <script>
+    document.getElementById("signupForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const firstName = document.getElementById("firstName").value.trim();
+      const lastName = document.getElementById("lastName").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+
+      if (password !== confirmPassword) {
+        alert("Passwords do not match!");
+        return;
+      }
+
+      const user = {
+        firstName,
+        lastName,
+        email,
+        password
+      };
+
+      // Save to localStorage
+      localStorage.setItem("fintrackUser", JSON.stringify(user));
+      alert("Account created successfully! Redirecting to login...");
+
+      // Redirect to login page
+      window.location.href = "loginPage.html";
+    });
+  </script>
+
 </body>
 </html>
