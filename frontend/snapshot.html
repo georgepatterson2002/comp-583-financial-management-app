@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Debit Summary Snapshot</title>
+  <link rel="stylesheet" href="style1.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+  <div class="container" id="debitSummarySection">
+    <h2>Debit Card Usage</h2>
+
+    <div class="tab-switcher">
+      <button class="tab-btn active" onclick="switchSummaryTab('daily')">Daily</button>
+      <button class="tab-btn" onclick="switchSummaryTab('weekly')">Weekly</button>
+      <button class="tab-btn" onclick="switchSummaryTab('monthly')">Monthly</button>
+    </div>
+
+    <div id="debitChartSummary" class="summary-view">
+      <!-- Dynamic content injected via JS -->
+    </div>
+
+    <div class="summary-meta">
+      <p><strong>Weekly average:</strong> ₹0</p>
+      <p><strong>This week's top transactions:</strong><br>
+        No transactions found this week.</p>
+    </div>
+
+
+  </div>
+  <div class="container" id="categorySection">
+    <h2>Spending by Category</h2>
+    <p id="categoryAsOf"></p>
+    <div id="categoryBreakdown"></div>
+    <button class="btn outline">See all categories</button>
+  </div>
+  <div class="container" id="cashFlowSection">
+    <h2>Cash Flow</h2>
+    <canvas id="cashFlowChart" width="400" height="200"></canvas>
+  
+    <div id="cashFlowLegend">
+      <p><span style="color: purple;">●</span> Money In &nbsp;&nbsp;
+         <span style="color: blue;">●</span> Money Out</p>
+    </div>
+  
+    <div class="tab-switcher">
+      <button class="tab-btn active" onclick="showCashFlowTab('income')">Top income sources</button>
+      <button class="tab-btn" onclick="showCashFlowTab('expense')">Top expenses</button>
+    </div>
+  
+    <div id="cashFlowDetails"></div>
+  </div>
+  
+  <div class="container" id="balanceSection">
+    <h2>Checking balance over time</h2>
+    <h3 id="presentBalance">$0</h3>
+    <p>Present balance</p>
+    <canvas id="balanceChart" width="400" height="180"></canvas>
+  </div>
+  
+  
+
+  <script src="snapshot.js"></script>
+  
+</body>
+</html>
